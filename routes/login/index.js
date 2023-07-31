@@ -9,6 +9,6 @@ const router = express.Router();
 // Importing Controllers
 const { userLogin } = require("../../controllers/login");
 
-router.post("/", userLogin);
+router.post("/user-login", userLogin);
 
 module.exports = router;

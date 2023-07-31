@@ -16,7 +16,7 @@ module.exports = {
 
     try {
       if (!loginUsername || !loginPassword) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Username and Password not found!",
           status: 0,
         });
@@ -44,7 +44,7 @@ module.exports = {
       );
 
       if (findUser.length == 0) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Username and Password not found!",
           status: 0,
         });
@@ -56,7 +56,7 @@ module.exports = {
       );
 
       if (!isPasswordValid) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Username and Password not found!",
           status: 0,
         });
