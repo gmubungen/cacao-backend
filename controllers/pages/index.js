@@ -26,7 +26,7 @@ module.exports = {
       );
 
       const getCount = await sequelize.query(
-        `SELECT COUNT(name) FROM public.pages;`,
+        `SELECT COUNT(id) FROM public.pages;`,
         {
           type: QueryTypes.SELECT,
         }
