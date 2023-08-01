@@ -23,7 +23,7 @@ module.exports = async (req, res, next) => {
   let decodedToken;
 
   try {
-    decodedToken = await jwt.verify(token, "sbcorpsupersecrettoken");
+    decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
     return res.status(404).json({
       message: "Bearer Token Not Found",

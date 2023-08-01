@@ -8,6 +8,8 @@ const moment = require("moment");
 
 module.exports = {
   getAllData: async (req, res) => {
+    const { page_id } = req.query;
+
     if (!req.isAuth) {
       return res.status(403).json({
         message: "unauthenticated request",
@@ -17,7 +19,7 @@ module.exports = {
 
     try {
       const getAllData = await sequelize.query(
-        `SELECT * FROM public.actions ORDER BY created_datetime DESC;`,
+        `SELECT * FROM public.actions WHERE page_id = '${page_id}' ORDER BY created_datetime DESC;`,
         {
           type: QueryTypes.SELECT,
         }
