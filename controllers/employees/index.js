@@ -19,6 +19,8 @@ const randomString = async (length, chars) => {
 
 module.exports = {
   getAllData: async (req, res) => {
+    const { limit, offset } = req.query;
+
     if (!req.isAuth) {
       return res.status(403).json({
         message: "unauthenticated request",
@@ -28,14 +30,50 @@ module.exports = {
 
     try {
       const getAllData = await sequelize.query(
-        `SELECT * FROM public.employees ORDER BY created_datetime DESC;`,
+        `SELECT employees.id as id, employees.first_name as first_name,
+         employees.middle_name as middle_name, employees.last_name as last_name,
+         employees.email as email, employees.employee_no as employee_no,
+         employees.contact_no as contact_no, employees.username as username,
+         employees.created_datetime as created_datetime, employees.updated_datetime as updated_datetime,
+         employees.role_id as role_id, employees.store_role_id as store_role_id,
+         roles.name as role_name
+         FROM public.employees INNER JOIN roles ON employees.role_id = roles.id ORDER BY created_datetime DESC LIMIT ${limit} OFFSET ${offset};`,
         {
           type: QueryTypes.SELECT,
         }
       );
 
+      const getCount = await sequelize.query(
+        `SELECT COUNT(id) FROM public.employees;`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      // Computation of Number of Pages
+      const pageCount = Math.ceil(parseInt(getCount[0].count) / limit);
+
       return res.status(200).json({
-        data: getAllData,
+        data: await Promise.all(
+          getAllData.map((item) => {
+            return {
+              id: item.id,
+              name: `${item.first_name} ${item.middle_name} ${item.last_name}`,
+              employee_no: item.employee_no,
+              email: item.email,
+              contact_no: item.contact_no,
+              role_name: item.role_name,
+              store_role_name: item.store_role_name,
+              role_id: item.role_id,
+              store_role_id: item.store_role_id,
+              username: item.username,
+              created_datetime: item.created_datetime,
+              updated_datetime: item.updated_datetime,
+            };
+          })
+        ),
+        count: parseInt(getCount[0].count),
+        pageCount: pageCount ? pageCount : 0,
         message: "success",
         status: 1,
       });
