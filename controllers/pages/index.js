@@ -19,7 +19,9 @@ module.exports = {
 
     try {
       const getAllData = await sequelize.query(
-        `SELECT id, name, link FROM public.pages ORDER BY created_datetime DESC LIMIT ${limit} OFFSET ${offset};`,
+        `SELECT id, name, link FROM public.pages ORDER BY created_datetime DESC${
+          limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
+        };`,
         {
           type: QueryTypes.SELECT,
         }

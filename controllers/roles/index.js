@@ -8,6 +8,8 @@ const moment = require("moment");
 
 module.exports = {
   getAllData: async (req, res) => {
+    const { limit, offset } = req.query;
+
     if (!req.isAuth) {
       return res.status(403).json({
         message: "unauthenticated request",
@@ -17,14 +19,26 @@ module.exports = {
 
     try {
       const getAllData = await sequelize.query(
-        `SELECT * FROM public.roles ORDER BY created_datetime DESC;`,
+        `SELECT * FROM public.roles ORDER BY created_datetime DESC LIMIT ${limit} OFFSET ${offset};`,
         {
           type: QueryTypes.SELECT,
         }
       );
 
+      const getCount = await sequelize.query(
+        `SELECT COUNT(id) FROM public.roles;`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      // Computation of Number of Pages
+      const pageCount = Math.ceil(parseInt(getCount[0].count) / limit);
+
       return res.status(200).json({
         data: getAllData,
+        count: parseInt(getCount[0].count),
+        pageCount: pageCount ? pageCount : 0,
         message: "success",
         status: 1,
       });
@@ -47,7 +61,7 @@ module.exports = {
 
     try {
       const getSpecificData = await sequelize.query(
-        `SELECT * FROM public.roles WHERE id = $id;`,
+        `SELECT id, modules, name, super FROM public.roles WHERE id = $id;`,
         {
           bind: { id },
           type: QueryTypes.SELECT,
@@ -62,7 +76,12 @@ module.exports = {
       }
 
       return res.status(200).json({
-        data: getSpecificData,
+        data: {
+          id: getSpecificData[0].id,
+          menu: JSON.parse(getSpecificData[0].modules),
+          name: getSpecificData[0].name,
+          super: getSpecificData[0].super,
+        },
         message: "success",
         status: 1,
       });
