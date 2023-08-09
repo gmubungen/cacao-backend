@@ -63,7 +63,7 @@ module.exports = {
 
     try {
       const getSpecificData = await sequelize.query(
-        `SELECT * FROM public.pages WHERE id = '${id}';`,
+        `SELECT * FROM public.pages WHERE id = $id;`,
         {
           bind: { id },
           type: QueryTypes.SELECT,
