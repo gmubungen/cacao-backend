@@ -37,7 +37,9 @@ module.exports = {
          employees.created_datetime as created_datetime, employees.updated_datetime as updated_datetime,
          employees.role_id as role_id, employees.store_role_id as store_role_id,
          roles.name as role_name
-         FROM public.employees INNER JOIN roles ON employees.role_id = roles.id ORDER BY created_datetime DESC LIMIT ${limit} OFFSET ${offset};`,
+         FROM public.employees INNER JOIN roles ON employees.role_id = roles.id ORDER BY created_datetime DESC${
+          limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
+        };`,
         {
           type: QueryTypes.SELECT,
         }

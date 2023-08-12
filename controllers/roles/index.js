@@ -19,7 +19,9 @@ module.exports = {
 
     try {
       const getAllData = await sequelize.query(
-        `SELECT * FROM public.roles ORDER BY created_datetime DESC LIMIT ${limit} OFFSET ${offset};`,
+        `SELECT * FROM public.roles ORDER BY created_datetime DESC${
+          limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
+        };`,
         {
           type: QueryTypes.SELECT,
         }
@@ -78,7 +80,7 @@ module.exports = {
       return res.status(200).json({
         data: {
           id: getSpecificData[0].id,
-          menu: JSON.parse(getSpecificData[0].modules),
+          menu: getSpecificData[0].modules,
           name: getSpecificData[0].name,
           super: getSpecificData[0].super,
         },
@@ -100,7 +102,7 @@ module.exports = {
       });
     }
 
-    const { name, modules } = req.body;
+    const { name, menu } = req.body;
 
     try {
       await sequelize.query(
@@ -109,7 +111,7 @@ module.exports = {
            "YYYY-MM-DD HH:mm:ss"
          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
         {
-          bind: { name, modules },
+          bind: { name, modules: JSON.stringify(menu) },
           type: QueryTypes.INSERT,
         }
       );
@@ -134,16 +136,16 @@ module.exports = {
     }
 
     const { id } = req.params;
-    const { name, modules } = req.body;
+    const { name, menu } = req.body;
 
     try {
       await sequelize.query(
-        `UPDATE public.roles SET name = $name, modules = $price, updated_datetime = '${moment().format(
+        `UPDATE public.roles SET name = $name, modules = $modules, updated_datetime = '${moment().format(
           "YYYY-MM-DD HH:mm:ss"
         )}'
          WHERE id = $id RETURNING *;`,
         {
-          bind: { id, name, modules },
+          bind: { id, name, modules: JSON.stringify(menu) },
           type: QueryTypes.UPDATE,
         }
       );

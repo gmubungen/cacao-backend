@@ -76,7 +76,8 @@ module.exports = {
       );
 
       if (findRole.length !== 0) {
-        findUser[0].role_menu = JSON.parse(findRole[0].modules);
+        // findUser[0].role_menu = JSON.parse(findRole[0].modules);
+        findUser[0].role_menu = findRole[0].modules;
       }
 
       const findStoreRole = await sequelize.query(

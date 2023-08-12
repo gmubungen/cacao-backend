@@ -8,6 +8,8 @@ const moment = require("moment");
 
 module.exports = {
   getAllData: async (req, res) => {
+    const { limit, offset } = req.query;
+
     if (!req.isAuth) {
       return res.status(403).json({
         message: "unauthenticated request",
@@ -17,14 +19,28 @@ module.exports = {
 
     try {
       const getAllData = await sequelize.query(
-        `SELECT * FROM public.type_of_measurements ORDER BY created_datetime DESC;`,
+        `SELECT * FROM public.type_of_measurements ORDER BY created_datetime DESC${
+          limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
+        };`,
         {
           type: QueryTypes.SELECT,
         }
       );
 
+      const getCount = await sequelize.query(
+        `SELECT COUNT(id) FROM public.type_of_measurements;`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      // Computation of Number of Pages
+      const pageCount = Math.ceil(parseInt(getCount[0].count) / limit);
+
       return res.status(200).json({
         data: getAllData,
+        count: parseInt(getCount[0].count),
+        pageCount: pageCount ? pageCount : 0,
         message: "success",
         status: 1,
       });
@@ -61,11 +77,7 @@ module.exports = {
         });
       }
 
-      return res.status(200).json({
-        data: getSpecificData,
-        message: "success",
-        status: 1,
-      });
+      return res.status(200).json(getSpecificData[0]);
     } catch (error) {
       return res.status(500).json({
         message: "There is a problem in API.",
