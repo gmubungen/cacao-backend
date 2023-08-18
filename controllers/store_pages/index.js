@@ -19,7 +19,7 @@ module.exports = {
 
     try {
       const getAllData = await sequelize.query(
-        `SELECT * FROM public.store_roles ORDER BY created_datetime DESC${
+        `SELECT id, name, link FROM public.store_pages ORDER BY created_datetime DESC${
           limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
         };`,
         {
@@ -28,7 +28,7 @@ module.exports = {
       );
 
       const getCount = await sequelize.query(
-        `SELECT COUNT(id) FROM public.store_roles;`,
+        `SELECT COUNT(id) FROM public.store_pages;`,
         {
           type: QueryTypes.SELECT,
         }
@@ -63,7 +63,7 @@ module.exports = {
 
     try {
       const getSpecificData = await sequelize.query(
-        `SELECT id, modules, name, super FROM public.store_roles WHERE id = $id;`,
+        `SELECT * FROM public.store_pages WHERE id = $id;`,
         {
           bind: { id },
           type: QueryTypes.SELECT,
@@ -77,16 +77,7 @@ module.exports = {
         });
       }
 
-      return res.status(200).json({
-        data: {
-          id: getSpecificData[0].id,
-          menu: getSpecificData[0].modules,
-          name: getSpecificData[0].name,
-          super: getSpecificData[0].super,
-        },
-        message: "success",
-        status: 1,
-      });
+      return res.status(200).json(getSpecificData[0]);
     } catch (error) {
       return res.status(500).json({
         message: "There is a problem in API.",
@@ -102,16 +93,19 @@ module.exports = {
       });
     }
 
-    const { name, menu } = req.body;
+    const { name, link } = req.body;
 
     try {
       await sequelize.query(
-        `INSERT INTO public.store_roles (id, name, modules, created_datetime, updated_datetime)
-         VALUES (gen_random_uuid(), $name, $modules, '${moment().format(
-           "YYYY-MM-DD HH:mm:ss"
-         )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+        `INSERT INTO public.store_pages (id, name, link, created_datetime, updated_datetime)
+         VALUES (gen_random_uuid(), $name, $link, $created_datetime, $updated_datetime) RETURNING *;`,
         {
-          bind: { name, modules: JSON.stringify(menu) },
+          bind: {
+            name,
+            link,
+            created_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+            updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+          },
           type: QueryTypes.INSERT,
         }
       );
@@ -136,16 +130,19 @@ module.exports = {
     }
 
     const { id } = req.params;
-    const { name, menu } = req.body;
+    const { name, link } = req.body;
 
     try {
       await sequelize.query(
-        `UPDATE public.store_roles SET name = $name, modules = $modules, updated_datetime = '${moment().format(
-          "YYYY-MM-DD HH:mm:ss"
-        )}'
+        `UPDATE public.store_pages SET name = $name, link = $link, updated_datetime = $updated_datetime
          WHERE id = $id RETURNING *;`,
         {
-          bind: { id, name, modules: JSON.stringify(menu) },
+          bind: {
+            id,
+            name,
+            link,
+            updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+          },
           type: QueryTypes.UPDATE,
         }
       );
@@ -173,7 +170,7 @@ module.exports = {
 
     try {
       await sequelize.query(
-        `DELETE FROM public.store_roles WHERE id = $id RETURNING *;`,
+        `DELETE FROM public.store_pages WHERE id = $id RETURNING *;`,
         {
           bind: { id },
           type: QueryTypes.DELETE,

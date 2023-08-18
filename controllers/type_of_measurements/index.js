@@ -130,7 +130,7 @@ module.exports = {
     }
 
     const { id } = req.params;
-    const { name, pieces } = JSON.parse(event.body);
+    const { name, pieces } = req.body;
 
     try {
       await sequelize.query(
