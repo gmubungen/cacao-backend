@@ -19,9 +19,10 @@ module.exports = {
 
     try {
       const getAllData = await sequelize.query(
-        `SELECT id, serial_no, store_id FROM public.devices ORDER BY created_datetime DESC${
-          limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
-        };`,
+        `SELECT devices.id as id, devices.serial_no as serial_no, devices.store_id as store_id, stores.name as store_name
+         FROM public.devices INNER JOIN stores ON devices.store_id = stores.id ORDER BY devices.created_datetime DESC${
+           limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
+         };`,
         {
           type: QueryTypes.SELECT,
         }
