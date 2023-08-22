@@ -823,104 +823,6 @@ const autoCreateData = async () => {
       });
     }
 
-    const findPageStore = await sequelize.query(
-      `SELECT * FROM public.pages WHERE link = '/store-roles';`,
-      {
-        type: QueryTypes.SELECT,
-      }
-    );
-
-    if (findPageStore.length === 0) {
-      const storeModules = [];
-
-      const pageStore = await sequelize.query(
-        `INSERT INTO public.pages (id, name, link, created_datetime, updated_datetime)
-                           VALUES (gen_random_uuid(), 'Stores', '/stores', '${moment().format(
-                             "YYYY-MM-DD HH:mm:ss"
-                           )}', '${moment().format(
-          "YYYY-MM-DD HH:mm:ss"
-        )}') RETURNING *;`,
-        {
-          type: QueryTypes.INSERT,
-        }
-      );
-
-      const { id, name, link, created_datetime, updated_datetime } =
-        pageStore[0][0];
-
-      const findModuleAdd = await sequelize.query(
-        `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
-
-      if (findModuleAdd.length === 0) {
-        const pageAdd = await sequelize.query(
-          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
-                                   VALUES (gen_random_uuid(), 'add', '${id}', '${moment().format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
-          {
-            type: QueryTypes.INSERT,
-          }
-        );
-
-        storeModules.push(pageAdd[0][0]);
-      }
-
-      const findModuleEdit = await sequelize.query(
-        `SELECT * FROM public.actions WHERE name = 'edit' AND page_id = '${id}';`,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
-
-      if (findModuleEdit.length === 0) {
-        const pageEdit = await sequelize.query(
-          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
-                                   VALUES (gen_random_uuid(), 'edit', '${id}', '${moment().format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
-          {
-            type: QueryTypes.INSERT,
-          }
-        );
-
-        storeModules.push(pageEdit[0][0]);
-      }
-
-      const findModuleDelete = await sequelize.query(
-        `SELECT * FROM public.actions WHERE name = 'delete' AND page_id = '${id}';`,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
-
-      if (findModuleDelete.length === 0) {
-        const pageDelete = await sequelize.query(
-          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
-                                   VALUES (gen_random_uuid(), 'delete', '${id}', '${moment().format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
-          {
-            type: QueryTypes.INSERT,
-          }
-        );
-
-        storeModules.push(pageDelete[0][0]);
-      }
-
-      roleMenu.push({
-        id,
-        name,
-        link,
-        created_datetime,
-        updated_datetime,
-        modules: storeModules,
-      });
-    }
-
     const findPageTypeOfMeasurements = await sequelize.query(
       `SELECT * FROM public.pages WHERE link = '/type-of-measurements';`,
       {
@@ -1373,6 +1275,200 @@ const autoCreateData = async () => {
       });
     }
 
+    const findStorePageStoreRoles = await sequelize.query(
+      `SELECT * FROM public.store_pages WHERE link = '/s/store-roles';`,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    if (findStorePageStoreRoles.length === 0) {
+      const storeStoreRolesModules = [];
+
+      const storePageStoreRoles = await sequelize.query(
+        `INSERT INTO public.store_pages (id, name, link, created_datetime, updated_datetime)
+                         VALUES (gen_random_uuid(), 'Store Roles', '/s/store-roles', '${moment().format(
+                           "YYYY-MM-DD HH:mm:ss"
+                         )}', '${moment().format(
+          "YYYY-MM-DD HH:mm:ss"
+        )}') RETURNING *;`,
+        {
+          type: QueryTypes.INSERT,
+        }
+      );
+
+      const { id, name, link, created_datetime, updated_datetime } =
+        storePageStoreRoles[0][0];
+
+      const findModuleAdd = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleAdd.length === 0) {
+        const pageAdd = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                                 VALUES (gen_random_uuid(), 'add', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        storeStoreRolesModules.push(pageAdd[0][0]);
+      }
+
+      const findModuleEdit = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'edit' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleEdit.length === 0) {
+        const pageEdit = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                                 VALUES (gen_random_uuid(), 'edit', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        storeStoreRolesModules.push(pageEdit[0][0]);
+      }
+
+      const findModuleDelete = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'delete' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleDelete.length === 0) {
+        const pageDelete = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                                 VALUES (gen_random_uuid(), 'delete', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        storeStoreRolesModules.push(pageDelete[0][0]);
+      }
+
+      storeRoleMenu.push({
+        id,
+        name,
+        link,
+        created_datetime,
+        updated_datetime,
+        modules: storeStoreRolesModules,
+      });
+    }
+
+    const findStorePageEmployees = await sequelize.query(
+      `SELECT * FROM public.store_pages WHERE link = '/s/employees';`,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    if (findStorePageEmployees.length === 0) {
+      const storeEmployeesModules = [];
+
+      const storePageEmployees = await sequelize.query(
+        `INSERT INTO public.store_pages (id, name, link, created_datetime, updated_datetime)
+               VALUES (gen_random_uuid(), 'Employees', '/s/employees', '${moment().format(
+                 "YYYY-MM-DD HH:mm:ss"
+               )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+        {
+          type: QueryTypes.INSERT,
+        }
+      );
+
+      const { id, name, link, created_datetime, updated_datetime } =
+        storePageEmployees[0][0];
+
+      const findModuleAdd = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleAdd.length === 0) {
+        const pageAdd = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                       VALUES (gen_random_uuid(), 'add', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        storeEmployeesModules.push(pageAdd[0][0]);
+      }
+
+      const findModuleEdit = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'edit' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleEdit.length === 0) {
+        const pageEdit = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                       VALUES (gen_random_uuid(), 'edit', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        storeEmployeesModules.push(pageEdit[0][0]);
+      }
+
+      const findModuleDelete = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'delete' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleDelete.length === 0) {
+        const pageDelete = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                       VALUES (gen_random_uuid(), 'delete', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        storeEmployeesModules.push(pageDelete[0][0]);
+      }
+
+      storeRoleMenu.push({
+        id,
+        name,
+        link,
+        created_datetime,
+        updated_datetime,
+        modules: storeEmployeesModules,
+      });
+    }
+
     const findSuperAdminUser = await sequelize.query(
       `SELECT * FROM public.employees WHERE username = 'cacao.admin';`,
       {
@@ -1420,10 +1516,10 @@ const autoCreateData = async () => {
       const hashedPassword = await bcrypt.hash("strongP@ssword", 12);
 
       await sequelize.query(
-        `INSERT INTO public.employees (id, first_name, middle_name, last_name, email, employee_no, contact_no, username, password, role_id, store_role_id, created_datetime, updated_datetime)
+        `INSERT INTO public.employees (id, first_name, middle_name, last_name, email, employee_no, contact_no, username, password, role_id, store_role_id, store_id, created_datetime, updated_datetime)
                                      VALUES (gen_random_uuid(), 'Admin', 'Admin', 'Admin', 'cacao.admin@gmail.com', '1', '1', 'cacao.admin', '${hashedPassword}', '${
           createdSuperAdminRole.id
-        }', '${createdSuperAdminStoreRole.id}', '${moment().format(
+        }', '${createdSuperAdminStoreRole.id}', null, '${moment().format(
           "YYYY-MM-DD HH:mm:ss"
         )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
         {

@@ -17,6 +17,7 @@ const {
   updateData,
   deleteData,
   changePassword,
+  assignEmployees,
 } = require("../../controllers/employees");
 
 router.get(
@@ -59,5 +60,13 @@ router.delete(
 );
 
 router.patch("/:id", authenticationMiddleware, changePassword);
+
+router.post(
+  "/assign-employees-in-store",
+  //   domainValidatorMiddleware,
+  //   blogPostRouterBodySanitizer,
+  authenticationMiddleware,
+  assignEmployees
+);
 
 module.exports = router;

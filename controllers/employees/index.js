@@ -37,20 +37,23 @@ module.exports = {
          employees.created_datetime as created_datetime, employees.updated_datetime as updated_datetime,
          employees.role_id as role_id, employees.store_role_id as store_role_id,
          roles.name as role_name,
-         store_roles.name as store_role_name
+         store_roles.name as store_role_name,
+         stores.name as store_name
          FROM public.employees
-         INNER JOIN roles ON employees.role_id = roles.id
-         INNER JOIN store_roles ON employees.store_role_id = store_roles.id
+         LEFT JOIN roles ON employees.role_id = roles.id
+         LEFT JOIN store_roles ON employees.store_role_id = store_roles.id
+         LEFT JOIN stores ON employees.store_id = stores.id
+         WHERE employees.first_name <> 'Admin' AND employees.middle_name <> 'Admin' AND employees.last_name <> 'Admin'
          ORDER BY created_datetime DESC${
-          limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
-        };`,
+           limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
+         };`,
         {
           type: QueryTypes.SELECT,
         }
       );
 
       const getCount = await sequelize.query(
-        `SELECT COUNT(id) FROM public.employees;`,
+        `SELECT COUNT(id) FROM public.employees WHERE employees.first_name <> 'Admin' AND employees.middle_name <> 'Admin' AND employees.last_name <> 'Admin';`,
         {
           type: QueryTypes.SELECT,
         }
@@ -72,6 +75,7 @@ module.exports = {
               store_role_name: item.store_role_name,
               role_id: item.role_id,
               store_role_id: item.store_role_id,
+              store_name: item.store_name,
               username: item.username,
               created_datetime: item.created_datetime,
               updated_datetime: item.updated_datetime,
@@ -145,6 +149,7 @@ module.exports = {
       username,
       role_id,
       store_role_id,
+      store_id,
     } = req.body;
 
     try {
@@ -199,7 +204,7 @@ module.exports = {
             created_datetime,
             updated_datetime,
             role_id,
-            store_role_id)
+            store_role_id, store_id)
          VALUES (
             gen_random_uuid(),
             $first_name,
@@ -213,7 +218,7 @@ module.exports = {
             $created_datetime,
             $updated_datetime,
             $role_id,
-            $store_role_id) RETURNING *;`,
+            $store_role_id, $store_id) RETURNING *;`,
         {
           bind: {
             first_name: first_name.trim(),
@@ -226,6 +231,7 @@ module.exports = {
             password: hashedPassword,
             role_id,
             store_role_id,
+            store_id,
             created_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
             updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
           },
@@ -263,6 +269,7 @@ module.exports = {
       username,
       role_id,
       store_role_id,
+      store_id,
     } = req.body;
 
     try {
@@ -324,6 +331,7 @@ module.exports = {
                  username = $username,
                  role_id = $role_id,
                  store_role_id = $store_role_id,
+                 store_id = $store_id,
                  updated_datetime = $updated_datetime
                  WHERE id = $id RETURNING *;`,
           {
@@ -338,6 +346,7 @@ module.exports = {
               username: username.trim(),
               role_id,
               store_role_id,
+              store_id,
               updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
             },
             type: QueryTypes.UPDATE,
@@ -361,7 +370,7 @@ module.exports = {
       });
     }
   },
-  deleteData: async (event, context, callback) => {
+  deleteData: async (req, res) => {
     if (!req.isAuth) {
       return res.status(403).json({
         message: "unauthenticated request",
@@ -452,6 +461,46 @@ module.exports = {
     } catch (error) {
       return res.status(503).json({
         message: "Request cannot continue!",
+        status: 0,
+      });
+    }
+  },
+  assignEmployees: async (req, res) => {
+    if (!req.isAuth) {
+      return res.status(403).json({
+        message: "unauthenticated request",
+        status: 0,
+      });
+    }
+
+    const { employees } = req.body;
+
+    try {
+      let i = 0;
+
+      do {
+        await sequelize.query(
+          `UPDATE public.employees SET store_id = $store_id, updated_datetime = $updated_datetime WHERE id = $id;`,
+          {
+            bind: {
+              id: employees[i].employee_id,
+              store_id: employees[i].store_id,
+              updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+            },
+            type: QueryTypes.UPDATE,
+          }
+        );
+
+        i++;
+      } while (i < employees.length);
+
+      return res.status(200).json({
+        message: "success",
+        status: 1,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "There is a problem in API.",
         status: 0,
       });
     }
