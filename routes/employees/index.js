@@ -12,6 +12,8 @@ const authenticationMiddleware = require("../../middlewares/authenticationMiddle
 // Importing Controllers
 const {
   getAllData,
+  getAllEmployeesViaStoreID,
+  getAllEmployeesExceptThisStoreID,
   getSpecificData,
   createData,
   updateData,
@@ -25,6 +27,20 @@ router.get(
   //   domainValidatorMiddleware,
   authenticationMiddleware,
   getAllData
+);
+
+router.get(
+  "/via-store-id",
+  //   domainValidatorMiddleware,
+  authenticationMiddleware,
+  getAllEmployeesViaStoreID
+);
+
+router.get(
+  "/except-this-store-id",
+  //   domainValidatorMiddleware,
+  authenticationMiddleware,
+  getAllEmployeesExceptThisStoreID
 );
 
 router.get(

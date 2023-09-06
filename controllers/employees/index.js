@@ -45,9 +45,10 @@ module.exports = {
          LEFT JOIN stores ON employees.store_id = stores.id
          WHERE employees.first_name <> 'Admin' AND employees.middle_name <> 'Admin' AND employees.last_name <> 'Admin'
          ORDER BY created_datetime DESC${
-           limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
+           limit && offset ? ` LIMIT $limit OFFSET $offset` : ""
          };`,
         {
+          bind: { limit, offset },
           type: QueryTypes.SELECT,
         }
       );
@@ -84,6 +85,88 @@ module.exports = {
         ),
         count: parseInt(getCount[0].count),
         pageCount: pageCount ? pageCount : 0,
+        message: "success",
+        status: 1,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "There is a problem in API.",
+        status: 0,
+      });
+    }
+  },
+  getAllEmployeesViaStoreID: async (req, res) => {
+    const { store_id } = req.query;
+
+    if (!req.isAuth) {
+      return res.status(403).json({
+        message: "unauthenticated request",
+        status: 0,
+      });
+    }
+
+    try {
+      const getAllData = await sequelize.query(
+        `SELECT id, first_name, middle_name, last_name
+         FROM public.employees
+         WHERE employees.first_name <> 'Admin' AND employees.middle_name <> 'Admin' AND employees.last_name <> 'Admin' AND employees.store_id = $store_id
+         ORDER BY created_datetime DESC;`,
+        {
+          bind: { store_id },
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      return res.status(200).json({
+        data: await Promise.all(
+          getAllData.map((item) => {
+            return {
+              id: item.id,
+              name: `${item.first_name} ${item.middle_name} ${item.last_name}`,
+            };
+          })
+        ),
+        message: "success",
+        status: 1,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "There is a problem in API.",
+        status: 0,
+      });
+    }
+  },
+  getAllEmployeesExceptThisStoreID: async (req, res) => {
+    const { store_id } = req.query;
+
+    if (!req.isAuth) {
+      return res.status(403).json({
+        message: "unauthenticated request",
+        status: 0,
+      });
+    }
+
+    try {
+      const getAllData = await sequelize.query(
+        `SELECT id, first_name, middle_name, last_name
+         FROM public.employees
+         WHERE employees.first_name <> 'Admin' AND employees.middle_name <> 'Admin' AND employees.last_name <> 'Admin' AND employees.store_id <> $store_id
+         ORDER BY created_datetime DESC;`,
+        {
+          bind: { store_id },
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      return res.status(200).json({
+        data: await Promise.all(
+          getAllData.map((item) => {
+            return {
+              id: item.id,
+              name: `${item.first_name} ${item.middle_name} ${item.last_name}`,
+            };
+          })
+        ),
         message: "success",
         status: 1,
       });
