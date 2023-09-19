@@ -7,8 +7,10 @@ const router = express.Router();
 // Importing Middlewares
 
 // Importing Controllers
-const { userLogin } = require("../../controllers/login");
+const { userLogin, employeeLogin } = require("../../controllers/login");
 
 router.post("/user-login", userLogin);
+
+router.post("/employee-login", employeeLogin);
 
 module.exports = router;

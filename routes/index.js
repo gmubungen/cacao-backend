@@ -18,6 +18,7 @@ const storeRolesRoutes = require("./store_roles");
 const storesRoutes = require("./stores");
 const typeOfMeasurementsRoutes = require("./type_of_measurements");
 const typeOfExpensesRoutes = require("./type_of_expenses");
+const categoriesRoutes = require("./categories");
 
 // Creating API extension and mounting router to itself for using middlewares
 router.use("/actions", actionsRoutes);
@@ -34,5 +35,6 @@ router.use("/store-roles", storeRolesRoutes);
 router.use("/stores", storesRoutes);
 router.use("/type-of-measurements", typeOfMeasurementsRoutes);
 router.use("/type-of-expenses", typeOfExpensesRoutes);
+router.use("/categories", categoriesRoutes);
 
 module.exports = router;

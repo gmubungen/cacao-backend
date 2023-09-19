@@ -19,7 +19,7 @@ module.exports = {
 
     try {
       const getAllData = await sequelize.query(
-        `SELECT * FROM public.products ORDER BY created_datetime DESC${
+        `SELECT * FROM public.categories ORDER BY created_datetime DESC${
           limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
         };`,
         {
@@ -28,7 +28,7 @@ module.exports = {
       );
 
       const getCount = await sequelize.query(
-        `SELECT COUNT(id) FROM public.products;`,
+        `SELECT COUNT(id) FROM public.categories;`,
         {
           type: QueryTypes.SELECT,
         }
@@ -63,7 +63,7 @@ module.exports = {
 
     try {
       const getSpecificData = await sequelize.query(
-        `SELECT * FROM public.products WHERE id = $id;`,
+        `SELECT * FROM public.categories WHERE id = '${id}';`,
         {
           bind: { id },
           type: QueryTypes.SELECT,
@@ -93,18 +93,15 @@ module.exports = {
       });
     }
 
-    const { name, price, ingredients, category_id } = req.body;
+    const { name } = req.body;
 
     try {
       await sequelize.query(
-        `INSERT INTO public.products (id, name, price, ingredients, category_id, created_datetime, updated_datetime)
-         VALUES (gen_random_uuid(), $name, $price, $ingredients, $category_id, $created_datetime, $updated_datetime) RETURNING *;`,
+        `INSERT INTO public.categories (id, name, created_datetime, updated_datetime)
+         VALUES (gen_random_uuid(), $name, $created_datetime, $updated_datetime) RETURNING *;`,
         {
           bind: {
             name,
-            price,
-            ingredients: JSON.stringify(ingredients),
-            category_id,
             created_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
             updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
           },
@@ -132,19 +129,16 @@ module.exports = {
     }
 
     const { id } = req.params;
-    const { name, price, ingredients, category_id } = req.body;
+    const { name } = req.body;
 
     try {
       await sequelize.query(
-        `UPDATE public.products SET name = $name, price = $price, ingredients = $ingredients, category_id = $category_id, updated_datetime = $updated_datetime
+        `UPDATE public.categories SET name = $name, updated_datetime = $updated_datetime
          WHERE id = $id RETURNING *;`,
         {
           bind: {
             id,
             name,
-            price,
-            ingredients: JSON.stringify(ingredients),
-            category_id,
             updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
           },
           type: QueryTypes.UPDATE,
@@ -174,7 +168,7 @@ module.exports = {
 
     try {
       await sequelize.query(
-        `DELETE FROM public.products WHERE id = $id RETURNING *;`,
+        `DELETE FROM public.categories WHERE id = '${id}' RETURNING *;`,
         {
           bind: { id },
           type: QueryTypes.DELETE,

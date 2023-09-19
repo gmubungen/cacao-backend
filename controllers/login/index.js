@@ -151,4 +151,108 @@ module.exports = {
       });
     }
   },
+  employeeLogin: async (req, res) => {
+    const { loginUsername, loginPassword } = req.body;
+
+    try {
+      if (!loginUsername || !loginPassword) {
+        return res.status(404).json({
+          message: "Username and Password not found!",
+          status: 0,
+        });
+      }
+
+      const findUser = await sequelize.query(
+        `SELECT id,
+            first_name,
+            middle_name,
+            last_name,
+            email,
+            employee_no,
+            contact_no,
+            username,
+            password,
+            role_id,
+            store_role_id
+            FROM public.employees WHERE username = $username;`,
+        {
+          bind: {
+            username: loginUsername,
+          },
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findUser.length == 0) {
+        return res.status(404).json({
+          message: "Username and Password not found!",
+          status: 0,
+        });
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        loginPassword,
+        findUser[0].password
+      );
+
+      if (!isPasswordValid) {
+        return res.status(404).json({
+          message: "Username and Password not found!",
+          status: 0,
+        });
+      }
+
+      const {
+        id,
+        first_name,
+        middle_name,
+        last_name,
+        email,
+        employee_no,
+        contact_no,
+        username,
+        password,
+        role_id,
+        store_role_id,
+      } = findUser[0];
+
+      return res.status(200).json({
+        message: "Login success!",
+        data: {
+          id,
+          first_name,
+          middle_name,
+          last_name,
+          email,
+          employee_no,
+          contact_no,
+          username,
+          password,
+          role_id,
+          store_role_id,
+          token: jwt.sign(
+            {
+              id,
+              first_name,
+              middle_name,
+              last_name,
+              email,
+              employee_no,
+              username,
+            },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: 60 * 60 * 24,
+            }
+          ),
+        },
+        status: 1,
+      });
+    } catch (error) {
+      return res.status(503).json({
+        message: "Login Failed!",
+        status: 0,
+      });
+    }
+  },
 };

@@ -431,103 +431,103 @@ const autoCreateData = async () => {
       });
     }
 
-    const findPageIngredients = await sequelize.query(
-      `SELECT * FROM public.pages WHERE link = '/ingredients';`,
-      {
-        type: QueryTypes.SELECT,
-      }
-    );
+    // const findPageIngredients = await sequelize.query(
+    //   `SELECT * FROM public.pages WHERE link = '/ingredients';`,
+    //   {
+    //     type: QueryTypes.SELECT,
+    //   }
+    // );
 
-    if (findPageIngredients.length === 0) {
-      const ingredientsModules = [];
+    // if (findPageIngredients.length === 0) {
+    //   const ingredientsModules = [];
 
-      const pageIngredients = await sequelize.query(
-        `INSERT INTO public.pages (id, name, link, created_datetime, updated_datetime)
-                 VALUES (gen_random_uuid(), 'Ingredients', '/ingredients', '${moment().format(
-                   "YYYY-MM-DD HH:mm:ss"
-                 )}', '${moment().format(
-          "YYYY-MM-DD HH:mm:ss"
-        )}') RETURNING *;`,
-        {
-          type: QueryTypes.INSERT,
-        }
-      );
+    //   const pageIngredients = await sequelize.query(
+    //     `INSERT INTO public.pages (id, name, link, created_datetime, updated_datetime)
+    //              VALUES (gen_random_uuid(), 'Ingredients', '/ingredients', '${moment().format(
+    //                "YYYY-MM-DD HH:mm:ss"
+    //              )}', '${moment().format(
+    //       "YYYY-MM-DD HH:mm:ss"
+    //     )}') RETURNING *;`,
+    //     {
+    //       type: QueryTypes.INSERT,
+    //     }
+    //   );
 
-      const { id, name, link, created_datetime, updated_datetime } =
-        pageIngredients[0][0];
+    //   const { id, name, link, created_datetime, updated_datetime } =
+    //     pageIngredients[0][0];
 
-      const findModuleAdd = await sequelize.query(
-        `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
+    //   const findModuleAdd = await sequelize.query(
+    //     `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
+    //     {
+    //       type: QueryTypes.SELECT,
+    //     }
+    //   );
 
-      if (findModuleAdd.length === 0) {
-        const pageAdd = await sequelize.query(
-          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
-                         VALUES (gen_random_uuid(), 'add', '${id}', '${moment().format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
-          {
-            type: QueryTypes.INSERT,
-          }
-        );
+    //   if (findModuleAdd.length === 0) {
+    //     const pageAdd = await sequelize.query(
+    //       `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+    //                      VALUES (gen_random_uuid(), 'add', '${id}', '${moment().format(
+    //         "YYYY-MM-DD HH:mm:ss"
+    //       )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+    //       {
+    //         type: QueryTypes.INSERT,
+    //       }
+    //     );
 
-        ingredientsModules.push(pageAdd[0][0]);
-      }
+    //     ingredientsModules.push(pageAdd[0][0]);
+    //   }
 
-      const findModuleEdit = await sequelize.query(
-        `SELECT * FROM public.actions WHERE name = 'edit' AND page_id = '${id}';`,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
+    //   const findModuleEdit = await sequelize.query(
+    //     `SELECT * FROM public.actions WHERE name = 'edit' AND page_id = '${id}';`,
+    //     {
+    //       type: QueryTypes.SELECT,
+    //     }
+    //   );
 
-      if (findModuleEdit.length === 0) {
-        const pageEdit = await sequelize.query(
-          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
-                         VALUES (gen_random_uuid(), 'edit', '${id}', '${moment().format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
-          {
-            type: QueryTypes.INSERT,
-          }
-        );
+    //   if (findModuleEdit.length === 0) {
+    //     const pageEdit = await sequelize.query(
+    //       `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+    //                      VALUES (gen_random_uuid(), 'edit', '${id}', '${moment().format(
+    //         "YYYY-MM-DD HH:mm:ss"
+    //       )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+    //       {
+    //         type: QueryTypes.INSERT,
+    //       }
+    //     );
 
-        ingredientsModules.push(pageEdit[0][0]);
-      }
+    //     ingredientsModules.push(pageEdit[0][0]);
+    //   }
 
-      const findModuleDelete = await sequelize.query(
-        `SELECT * FROM public.actions WHERE name = 'delete' AND page_id = '${id}';`,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
+    //   const findModuleDelete = await sequelize.query(
+    //     `SELECT * FROM public.actions WHERE name = 'delete' AND page_id = '${id}';`,
+    //     {
+    //       type: QueryTypes.SELECT,
+    //     }
+    //   );
 
-      if (findModuleDelete.length === 0) {
-        const pageDelete = await sequelize.query(
-          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
-                         VALUES (gen_random_uuid(), 'delete', '${id}', '${moment().format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
-          {
-            type: QueryTypes.INSERT,
-          }
-        );
+    //   if (findModuleDelete.length === 0) {
+    //     const pageDelete = await sequelize.query(
+    //       `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+    //                      VALUES (gen_random_uuid(), 'delete', '${id}', '${moment().format(
+    //         "YYYY-MM-DD HH:mm:ss"
+    //       )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+    //       {
+    //         type: QueryTypes.INSERT,
+    //       }
+    //     );
 
-        ingredientsModules.push(pageDelete[0][0]);
-      }
+    //     ingredientsModules.push(pageDelete[0][0]);
+    //   }
 
-      roleMenu.push({
-        id,
-        name,
-        link,
-        created_datetime,
-        updated_datetime,
-        modules: ingredientsModules,
-      });
-    }
+    //   roleMenu.push({
+    //     id,
+    //     name,
+    //     link,
+    //     created_datetime,
+    //     updated_datetime,
+    //     modules: ingredientsModules,
+    //   });
+    // }
 
     const findPageProducts = await sequelize.query(
       `SELECT * FROM public.pages WHERE link = '/products';`,
@@ -823,103 +823,103 @@ const autoCreateData = async () => {
       });
     }
 
-    const findPageTypeOfMeasurements = await sequelize.query(
-      `SELECT * FROM public.pages WHERE link = '/type-of-measurements';`,
-      {
-        type: QueryTypes.SELECT,
-      }
-    );
+    // const findPageTypeOfMeasurements = await sequelize.query(
+    //   `SELECT * FROM public.pages WHERE link = '/type-of-measurements';`,
+    //   {
+    //     type: QueryTypes.SELECT,
+    //   }
+    // );
 
-    if (findPageTypeOfMeasurements.length === 0) {
-      const typeOfMeasurementsModules = [];
+    // if (findPageTypeOfMeasurements.length === 0) {
+    //   const typeOfMeasurementsModules = [];
 
-      const pageTypeOfMeasurements = await sequelize.query(
-        `INSERT INTO public.pages (id, name, link, created_datetime, updated_datetime)
-                             VALUES (gen_random_uuid(), 'Type of Measurements', '/type-of-measurements', '${moment().format(
-                               "YYYY-MM-DD HH:mm:ss"
-                             )}', '${moment().format(
-          "YYYY-MM-DD HH:mm:ss"
-        )}') RETURNING *;`,
-        {
-          type: QueryTypes.INSERT,
-        }
-      );
+    //   const pageTypeOfMeasurements = await sequelize.query(
+    //     `INSERT INTO public.pages (id, name, link, created_datetime, updated_datetime)
+    //                          VALUES (gen_random_uuid(), 'Type of Measurements', '/type-of-measurements', '${moment().format(
+    //                            "YYYY-MM-DD HH:mm:ss"
+    //                          )}', '${moment().format(
+    //       "YYYY-MM-DD HH:mm:ss"
+    //     )}') RETURNING *;`,
+    //     {
+    //       type: QueryTypes.INSERT,
+    //     }
+    //   );
 
-      const { id, name, link, created_datetime, updated_datetime } =
-        pageTypeOfMeasurements[0][0];
+    //   const { id, name, link, created_datetime, updated_datetime } =
+    //     pageTypeOfMeasurements[0][0];
 
-      const findModuleAdd = await sequelize.query(
-        `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
+    //   const findModuleAdd = await sequelize.query(
+    //     `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
+    //     {
+    //       type: QueryTypes.SELECT,
+    //     }
+    //   );
 
-      if (findModuleAdd.length === 0) {
-        const pageAdd = await sequelize.query(
-          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
-                                     VALUES (gen_random_uuid(), 'add', '${id}', '${moment().format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
-          {
-            type: QueryTypes.INSERT,
-          }
-        );
+    //   if (findModuleAdd.length === 0) {
+    //     const pageAdd = await sequelize.query(
+    //       `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+    //                                  VALUES (gen_random_uuid(), 'add', '${id}', '${moment().format(
+    //         "YYYY-MM-DD HH:mm:ss"
+    //       )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+    //       {
+    //         type: QueryTypes.INSERT,
+    //       }
+    //     );
 
-        typeOfMeasurementsModules.push(pageAdd[0][0]);
-      }
+    //     typeOfMeasurementsModules.push(pageAdd[0][0]);
+    //   }
 
-      const findModuleEdit = await sequelize.query(
-        `SELECT * FROM public.actions WHERE name = 'edit' AND page_id = '${id}';`,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
+    //   const findModuleEdit = await sequelize.query(
+    //     `SELECT * FROM public.actions WHERE name = 'edit' AND page_id = '${id}';`,
+    //     {
+    //       type: QueryTypes.SELECT,
+    //     }
+    //   );
 
-      if (findModuleEdit.length === 0) {
-        const pageEdit = await sequelize.query(
-          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
-                                     VALUES (gen_random_uuid(), 'edit', '${id}', '${moment().format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
-          {
-            type: QueryTypes.INSERT,
-          }
-        );
+    //   if (findModuleEdit.length === 0) {
+    //     const pageEdit = await sequelize.query(
+    //       `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+    //                                  VALUES (gen_random_uuid(), 'edit', '${id}', '${moment().format(
+    //         "YYYY-MM-DD HH:mm:ss"
+    //       )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+    //       {
+    //         type: QueryTypes.INSERT,
+    //       }
+    //     );
 
-        typeOfMeasurementsModules.push(pageEdit[0][0]);
-      }
+    //     typeOfMeasurementsModules.push(pageEdit[0][0]);
+    //   }
 
-      const findModuleDelete = await sequelize.query(
-        `SELECT * FROM public.actions WHERE name = 'delete' AND page_id = '${id}';`,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
+    //   const findModuleDelete = await sequelize.query(
+    //     `SELECT * FROM public.actions WHERE name = 'delete' AND page_id = '${id}';`,
+    //     {
+    //       type: QueryTypes.SELECT,
+    //     }
+    //   );
 
-      if (findModuleDelete.length === 0) {
-        const pageDelete = await sequelize.query(
-          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
-                                     VALUES (gen_random_uuid(), 'delete', '${id}', '${moment().format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
-          {
-            type: QueryTypes.INSERT,
-          }
-        );
+    //   if (findModuleDelete.length === 0) {
+    //     const pageDelete = await sequelize.query(
+    //       `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+    //                                  VALUES (gen_random_uuid(), 'delete', '${id}', '${moment().format(
+    //         "YYYY-MM-DD HH:mm:ss"
+    //       )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+    //       {
+    //         type: QueryTypes.INSERT,
+    //       }
+    //     );
 
-        typeOfMeasurementsModules.push(pageDelete[0][0]);
-      }
+    //     typeOfMeasurementsModules.push(pageDelete[0][0]);
+    //   }
 
-      roleMenu.push({
-        id,
-        name,
-        link,
-        created_datetime,
-        updated_datetime,
-        modules: typeOfMeasurementsModules,
-      });
-    }
+    //   roleMenu.push({
+    //     id,
+    //     name,
+    //     link,
+    //     created_datetime,
+    //     updated_datetime,
+    //     modules: typeOfMeasurementsModules,
+    //   });
+    // }
 
     const findPageTypeOfExpenses = await sequelize.query(
       `SELECT * FROM public.pages WHERE link = '/type-of-expenses';`,
@@ -1016,6 +1016,104 @@ const autoCreateData = async () => {
         created_datetime,
         updated_datetime,
         modules: typeOfExpensesModules,
+      });
+    }
+
+    const findPageCategories = await sequelize.query(
+      `SELECT * FROM public.pages WHERE link = '/categories';`,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    if (findPageCategories.length === 0) {
+      const categoriesModules = [];
+
+      const pageCategories = await sequelize.query(
+        `INSERT INTO public.pages (id, name, link, created_datetime, updated_datetime)
+                             VALUES (gen_random_uuid(), 'Categories', '/categories', '${moment().format(
+                               "YYYY-MM-DD HH:mm:ss"
+                             )}', '${moment().format(
+          "YYYY-MM-DD HH:mm:ss"
+        )}') RETURNING *;`,
+        {
+          type: QueryTypes.INSERT,
+        }
+      );
+
+      const { id, name, link, created_datetime, updated_datetime } =
+        pageCategories[0][0];
+
+      const findModuleAdd = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleAdd.length === 0) {
+        const pageAdd = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                                     VALUES (gen_random_uuid(), 'add', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        categoriesModules.push(pageAdd[0][0]);
+      }
+
+      const findModuleEdit = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'edit' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleEdit.length === 0) {
+        const pageEdit = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                                     VALUES (gen_random_uuid(), 'edit', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        categoriesModules.push(pageEdit[0][0]);
+      }
+
+      const findModuleDelete = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'delete' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleDelete.length === 0) {
+        const pageDelete = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                                     VALUES (gen_random_uuid(), 'delete', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        categoriesModules.push(pageDelete[0][0]);
+      }
+
+      roleMenu.push({
+        id,
+        name,
+        link,
+        created_datetime,
+        updated_datetime,
+        modules: categoriesModules,
       });
     }
 

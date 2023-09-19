@@ -13,11 +13,10 @@ const authenticationMiddleware = require("../../middlewares/authenticationMiddle
 const {
   getAllData,
   getSpecificData,
-  deviceActivation,
   createData,
   updateData,
   deleteData,
-} = require("../../controllers/devices");
+} = require("../../controllers/categories");
 
 router.get(
   "/",
@@ -40,14 +39,6 @@ router.post(
   //   blogPostRouterBodySanitizer,
   authenticationMiddleware,
   createData
-);
-
-router.post(
-  "/device-activation",
-  //   domainValidatorMiddleware,
-  //   blogPostRouterBodySanitizer,
-  authenticationMiddleware,
-  deviceActivation
 );
 
 router.patch(

@@ -122,6 +122,138 @@ module.exports = {
       });
     }
   },
+  deviceActivation: async (req, res) => {
+    if (!req.isAuth) {
+      return res.status(403).json({
+        message: "unauthenticated request",
+        status: 0,
+      });
+    }
+
+    const { deivce_serial_no } = req.body;
+
+    try {
+      const getSpecificData = await sequelize.query(
+        `SELECT * FROM public.devices WHERE serial_no = $deivce_serial_no;`,
+        {
+          bind: { deivce_serial_no },
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (getSpecificData.length === 0) {
+        return res.status(404).json({
+          message: "Item not found in database.",
+          status: 0,
+        });
+      }
+
+      const { id, store_id, activation } = getSpecificData[0];
+
+      if (activation === 1) {
+        await sequelize.query(
+          `UPDATE public.devices SET activation = 0 WHERE id = $id;`,
+          {
+            bind: {
+              id,
+              updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+            },
+            type: QueryTypes.UPDATE,
+          }
+        );
+
+        return res.status(200).json({
+          message: "success - device is now deactivated.",
+          status: 1,
+        });
+      } else {
+        const getStoreData = await sequelize.query(
+          `SELECT * FROM public.stores WHERE id = $store_id;`,
+          {
+            bind: { store_id },
+            type: QueryTypes.SELECT,
+          }
+        );
+
+        if (getStoreData.length === 0) {
+          return res.status(404).json({
+            message: "Store not found in database.",
+            status: 0,
+          });
+        }
+
+        const getAllProducts = await sequelize.query(
+          `SELECT name FROM public.products ORDER BY created_datetime DESC;`,
+          {
+            type: QueryTypes.SELECT,
+          }
+        );
+
+        if (getAllProducts.length === 0) {
+          return res.status(404).json({
+            message: "Products not found in database.",
+            status: 0,
+          });
+        }
+
+        const getAllCategories = await sequelize.query(
+          `SELECT * FROM public.categories ORDER BY created_datetime DESC;`,
+          {
+            type: QueryTypes.SELECT,
+          }
+        );
+
+        if (getAllCategories.length === 0) {
+          return res.status(404).json({
+            message: "Categories not found in database.",
+            status: 0,
+          });
+        }
+
+        const getAllTypeOfExpenses = await sequelize.query(
+          `SELECT * FROM public.type_of_expenses ORDER BY created_datetime DESC;`,
+          {
+            type: QueryTypes.SELECT,
+          }
+        );
+
+        if (getAllTypeOfExpenses.length === 0) {
+          return res.status(404).json({
+            message: "Types of Expenses not found in database.",
+            status: 0,
+          });
+        }
+
+        await sequelize.query(
+          `UPDATE public.devices SET activation = 1 WHERE id = $id;`,
+          {
+            bind: {
+              id,
+              updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+            },
+            type: QueryTypes.UPDATE,
+          }
+        );
+
+        return res.status(200).json({
+          message: "success - device is now activated.",
+          status: 1,
+          data: {
+            device: getSpecificData[0],
+            store: getStoreData[0],
+            products: getAllProducts[0],
+            categories: getAllCategories[0],
+            type_of_expenses: getAllTypeOfExpenses[0],
+          },
+        });
+      }
+    } catch (error) {
+      return res.status(500).json({
+        message: "There is a problem in API.",
+        status: 0,
+      });
+    }
+  },
   updateData: async (req, res) => {
     if (!req.isAuth) {
       return res.status(403).json({
