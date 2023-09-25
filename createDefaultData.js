@@ -823,19 +823,19 @@ const autoCreateData = async () => {
       });
     }
 
-    // const findPageTypeOfMeasurements = await sequelize.query(
-    //   `SELECT * FROM public.pages WHERE link = '/type-of-measurements';`,
+    // const findPageTypesOfMeasurement = await sequelize.query(
+    //   `SELECT * FROM public.pages WHERE link = '/types-of-measurement';`,
     //   {
     //     type: QueryTypes.SELECT,
     //   }
     // );
 
-    // if (findPageTypeOfMeasurements.length === 0) {
-    //   const typeOfMeasurementsModules = [];
+    // if (findPageTypesOfMeasurement.length === 0) {
+    //   const typesOfMeasurementModules = [];
 
-    //   const pageTypeOfMeasurements = await sequelize.query(
+    //   const pageTypesOfMeasurement = await sequelize.query(
     //     `INSERT INTO public.pages (id, name, link, created_datetime, updated_datetime)
-    //                          VALUES (gen_random_uuid(), 'Type of Measurements', '/type-of-measurements', '${moment().format(
+    //                          VALUES (gen_random_uuid(), 'Types of Measurement', '/types-of-measurement', '${moment().format(
     //                            "YYYY-MM-DD HH:mm:ss"
     //                          )}', '${moment().format(
     //       "YYYY-MM-DD HH:mm:ss"
@@ -846,7 +846,7 @@ const autoCreateData = async () => {
     //   );
 
     //   const { id, name, link, created_datetime, updated_datetime } =
-    //     pageTypeOfMeasurements[0][0];
+    //     pageTypesOfMeasurement[0][0];
 
     //   const findModuleAdd = await sequelize.query(
     //     `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
@@ -866,7 +866,7 @@ const autoCreateData = async () => {
     //       }
     //     );
 
-    //     typeOfMeasurementsModules.push(pageAdd[0][0]);
+    //     typesOfMeasurementModules.push(pageAdd[0][0]);
     //   }
 
     //   const findModuleEdit = await sequelize.query(
@@ -887,7 +887,7 @@ const autoCreateData = async () => {
     //       }
     //     );
 
-    //     typeOfMeasurementsModules.push(pageEdit[0][0]);
+    //     typesOfMeasurementModules.push(pageEdit[0][0]);
     //   }
 
     //   const findModuleDelete = await sequelize.query(
@@ -908,7 +908,7 @@ const autoCreateData = async () => {
     //       }
     //     );
 
-    //     typeOfMeasurementsModules.push(pageDelete[0][0]);
+    //     typesOfMeasurementModules.push(pageDelete[0][0]);
     //   }
 
     //   roleMenu.push({
@@ -917,23 +917,23 @@ const autoCreateData = async () => {
     //     link,
     //     created_datetime,
     //     updated_datetime,
-    //     modules: typeOfMeasurementsModules,
+    //     modules: typesOfMeasurementModules,
     //   });
     // }
 
-    const findPageTypeOfExpenses = await sequelize.query(
-      `SELECT * FROM public.pages WHERE link = '/type-of-expenses';`,
+    const findPageTypesOfExpense = await sequelize.query(
+      `SELECT * FROM public.pages WHERE link = '/types-of-expense';`,
       {
         type: QueryTypes.SELECT,
       }
     );
 
-    if (findPageTypeOfExpenses.length === 0) {
-      const typeOfExpensesModules = [];
+    if (findPageTypesOfExpense.length === 0) {
+      const typesOfExpenseModules = [];
 
-      const pageTypeOfExpenses = await sequelize.query(
+      const pageTypesOfExpense = await sequelize.query(
         `INSERT INTO public.pages (id, name, link, created_datetime, updated_datetime)
-                             VALUES (gen_random_uuid(), 'Type of Expenses', '/type-of-expenses', '${moment().format(
+                             VALUES (gen_random_uuid(), 'Types of Expense', '/types-of-expense', '${moment().format(
                                "YYYY-MM-DD HH:mm:ss"
                              )}', '${moment().format(
           "YYYY-MM-DD HH:mm:ss"
@@ -944,7 +944,7 @@ const autoCreateData = async () => {
       );
 
       const { id, name, link, created_datetime, updated_datetime } =
-        pageTypeOfExpenses[0][0];
+        pageTypesOfExpense[0][0];
 
       const findModuleAdd = await sequelize.query(
         `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
@@ -964,7 +964,7 @@ const autoCreateData = async () => {
           }
         );
 
-        typeOfExpensesModules.push(pageAdd[0][0]);
+        typesOfExpenseModules.push(pageAdd[0][0]);
       }
 
       const findModuleEdit = await sequelize.query(
@@ -985,7 +985,7 @@ const autoCreateData = async () => {
           }
         );
 
-        typeOfExpensesModules.push(pageEdit[0][0]);
+        typesOfExpenseModules.push(pageEdit[0][0]);
       }
 
       const findModuleDelete = await sequelize.query(
@@ -1006,7 +1006,7 @@ const autoCreateData = async () => {
           }
         );
 
-        typeOfExpensesModules.push(pageDelete[0][0]);
+        typesOfExpenseModules.push(pageDelete[0][0]);
       }
 
       roleMenu.push({
@@ -1015,7 +1015,105 @@ const autoCreateData = async () => {
         link,
         created_datetime,
         updated_datetime,
-        modules: typeOfExpensesModules,
+        modules: typesOfExpenseModules,
+      });
+    }
+
+    const findPageTypesOfPayment = await sequelize.query(
+      `SELECT * FROM public.pages WHERE link = '/types-of-payment';`,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    if (findPageTypesOfPayment.length === 0) {
+      const typesOfPaymentModules = [];
+
+      const pageTypesOfPayment = await sequelize.query(
+        `INSERT INTO public.pages (id, name, link, created_datetime, updated_datetime)
+                             VALUES (gen_random_uuid(), 'Types of Payment', '/types-of-payment', '${moment().format(
+                               "YYYY-MM-DD HH:mm:ss"
+                             )}', '${moment().format(
+          "YYYY-MM-DD HH:mm:ss"
+        )}') RETURNING *;`,
+        {
+          type: QueryTypes.INSERT,
+        }
+      );
+
+      const { id, name, link, created_datetime, updated_datetime } =
+        pageTypesOfPayment[0][0];
+
+      const findModuleAdd = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'add' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleAdd.length === 0) {
+        const pageAdd = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                                     VALUES (gen_random_uuid(), 'add', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        typesOfPaymentModules.push(pageAdd[0][0]);
+      }
+
+      const findModuleEdit = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'edit' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleEdit.length === 0) {
+        const pageEdit = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                                     VALUES (gen_random_uuid(), 'edit', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        typesOfPaymentModules.push(pageEdit[0][0]);
+      }
+
+      const findModuleDelete = await sequelize.query(
+        `SELECT * FROM public.actions WHERE name = 'delete' AND page_id = '${id}';`,
+        {
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      if (findModuleDelete.length === 0) {
+        const pageDelete = await sequelize.query(
+          `INSERT INTO public.actions (id, name, page_id, created_datetime, updated_datetime)
+                                     VALUES (gen_random_uuid(), 'delete', '${id}', '${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}', '${moment().format("YYYY-MM-DD HH:mm:ss")}') RETURNING *;`,
+          {
+            type: QueryTypes.INSERT,
+          }
+        );
+
+        typesOfPaymentModules.push(pageDelete[0][0]);
+      }
+
+      roleMenu.push({
+        id,
+        name,
+        link,
+        created_datetime,
+        updated_datetime,
+        modules: typesOfPaymentModules,
       });
     }
 

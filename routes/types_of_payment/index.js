@@ -16,7 +16,7 @@ const {
   createData,
   updateData,
   deleteData,
-} = require("../../controllers/type_of_expenses");
+} = require("../../controllers/types_of_payment");
 
 router.get(
   "/",

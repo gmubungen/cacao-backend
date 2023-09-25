@@ -19,7 +19,7 @@ module.exports = {
 
     try {
       const getAllData = await sequelize.query(
-        `SELECT * FROM public.type_of_expenses ORDER BY created_datetime DESC${
+        `SELECT * FROM public.types_of_payment ORDER BY created_datetime DESC${
           limit && offset ? ` LIMIT ${limit} OFFSET ${offset}` : ""
         };`,
         {
@@ -28,7 +28,7 @@ module.exports = {
       );
 
       const getCount = await sequelize.query(
-        `SELECT COUNT(id) FROM public.type_of_expenses;`,
+        `SELECT COUNT(id) FROM public.types_of_payment;`,
         {
           type: QueryTypes.SELECT,
         }
@@ -63,7 +63,7 @@ module.exports = {
 
     try {
       const getSpecificData = await sequelize.query(
-        `SELECT * FROM public.type_of_expenses WHERE id = '${id}';`,
+        `SELECT * FROM public.types_of_payment WHERE id = '${id}';`,
         {
           bind: { id },
           type: QueryTypes.SELECT,
@@ -97,7 +97,7 @@ module.exports = {
 
     try {
       await sequelize.query(
-        `INSERT INTO public.type_of_expenses (id, name, created_datetime, updated_datetime)
+        `INSERT INTO public.types_of_payment (id, name, created_datetime, updated_datetime)
          VALUES (gen_random_uuid(), $name, $created_datetime, $updated_datetime) RETURNING *;`,
         {
           bind: {
@@ -133,7 +133,7 @@ module.exports = {
 
     try {
       await sequelize.query(
-        `UPDATE public.type_of_expenses SET name = $name, updated_datetime = $updated_datetime
+        `UPDATE public.types_of_payment SET name = $name, updated_datetime = $updated_datetime
          WHERE id = $id RETURNING *;`,
         {
           bind: {
@@ -168,7 +168,7 @@ module.exports = {
 
     try {
       await sequelize.query(
-        `DELETE FROM public.type_of_expenses WHERE id = '${id}' RETURNING *;`,
+        `DELETE FROM public.types_of_payment WHERE id = '${id}' RETURNING *;`,
         {
           bind: { id },
           type: QueryTypes.DELETE,
