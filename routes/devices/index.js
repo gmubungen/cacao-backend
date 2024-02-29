@@ -14,6 +14,7 @@ const {
   getAllData,
   getSpecificData,
   deviceActivation,
+  endShift,
   createData,
   updateData,
   deleteData,
@@ -48,6 +49,14 @@ router.post(
   //   blogPostRouterBodySanitizer,
   authenticationMiddleware,
   deviceActivation
+);
+
+router.post(
+  "/end-shift",
+  //   domainValidatorMiddleware,
+  //   blogPostRouterBodySanitizer,
+  // authenticationMiddleware,
+  endShift
 );
 
 router.patch(

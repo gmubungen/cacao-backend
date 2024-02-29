@@ -254,6 +254,226 @@ module.exports = {
       });
     }
   },
+  endShift: async (req, res) => {
+    // const { shifts, orders, store_inventory, meal_waste } = JSON.parse(req.body);
+
+    const { shifts, orders, store_inventory, meal_waste } = req.body;
+
+    try {
+      let ordersInc = 0;
+      let storeInventoryInc = 0;
+      let mealWasteInc = 0;
+
+      if (shifts.length !== 0) {
+        const {
+          shift_id,
+          opening_date,
+          closing_date,
+          opening_time,
+          closing_time,
+          cashier_id,
+          cashier_name,
+          cash_on_hands_amount,
+          total_sales_amount,
+          food_panda_sales,
+          grab_sales,
+          sales_status,
+          shift_status,
+          regular_count,
+          pwd_count,
+          senior_count,
+          total_discount,
+        } = shifts[0];
+
+        await sequelize.query(
+          `INSERT INTO public.daily_shifts (id, shift_id, opening_datetime, closing_datetime, cashier_id, cashier_name, cash_on_hands_amount, total_sales_amount, food_panda_sales, grab_sales, sales_status, shift_status, regular_count, pwd_count, senior_count, total_discount, created_datetime, updated_datetime)
+         VALUES (gen_random_uuid(), $shift_id, $opening_datetime, $closing_datetime, $cashier_id, $cashier_name, $cash_on_hands_amount, $total_sales_amount, $food_panda_sales, $grab_sales, $sales_status, $shift_status, $regular_count, $pwd_count, $senior_count, $total_discount, $created_datetime, $updated_datetime) RETURNING *;`,
+          {
+            bind: {
+              shift_id,
+              opening_datetime: `${
+                opening_date > 0 && opening_time > 0
+                  ? moment(opening_date).format("YYYY-MM-DD") +
+                    " " +
+                    moment(opening_time).format("HH:mm:ss")
+                  : null
+              }`,
+              closing_datetime: `${
+                closing_date > 0 && closing_time > 0
+                  ? moment(closing_date).format("YYYY-MM-DD") +
+                    " " +
+                    moment(closing_time).format("HH:mm:ss")
+                  : null
+              }`,
+              cashier_id,
+              cashier_name,
+              cash_on_hands_amount,
+              total_sales_amount,
+              food_panda_sales,
+              grab_sales,
+              sales_status,
+              shift_status,
+              regular_count,
+              pwd_count,
+              senior_count,
+              total_discount,
+              created_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+              updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+            },
+            type: QueryTypes.INSERT,
+          }
+        );
+      }
+
+      if (orders.length !== 0) {
+        do {
+          const {
+            order_id,
+            order_number,
+            order_name,
+            order_amount,
+            order_count,
+            order_status,
+            order_customer_type,
+            order_customer_id_number,
+            added_at,
+            added_by,
+            year,
+            month,
+            day,
+            order_payment_type,
+          } = orders[ordersInc];
+
+          await sequelize.query(
+            `INSERT INTO public.daily_orders (id, order_id, order_number, order_name, order_amount, order_count, order_status, order_customer_type, order_customer_id, device_added_at, device_added_by, date, order_payment_type, created_datetime, updated_datetime)
+           VALUES (gen_random_uuid(), $order_id, $order_number, $order_name, $order_amount, $order_count, $order_status, $order_customer_type, $order_customer_id_number, $device_added_at, $device_added_by, $date, $order_payment_type, $created_datetime, $updated_datetime) RETURNING *;`,
+            {
+              bind: {
+                order_id,
+                order_number,
+                order_name,
+                order_amount,
+                order_count,
+                order_status,
+                order_customer_type,
+                order_customer_id_number,
+                device_added_at: moment(added_at).format("YYYY-MM-DD HH:mm:ss"),
+                device_added_by: added_by,
+                date: moment(
+                  `${year}-${month}-${day} 00:00:00`,
+                  "YYYY-MM-DD HH:mm:ss"
+                ).format("YYYY-MM-DD HH:mm:ss"),
+                order_payment_type,
+                created_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+                updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+              },
+              type: QueryTypes.INSERT,
+            }
+          );
+
+          ordersInc++;
+        } while (ordersInc < orders.length);
+      }
+
+      if (store_inventory.length !== 0) {
+        do {
+          const {
+            store_inventory_id,
+            store_inventory_name,
+            store_inventory_type,
+            store_inventory_count,
+            updated_at,
+            updated_by,
+          } = store_inventory[storeInventoryInc];
+
+          await sequelize.query(
+            `INSERT INTO public.daily_store_inventory (id, store_inventory_id, store_inventory_name, store_inventory_type, store_inventory_count, device_updated_at, device_updated_by, created_datetime, updated_datetime)
+           VALUES (gen_random_uuid(), $store_inventory_id, $store_inventory_name, $store_inventory_type, $store_inventory_count, $device_updated_at, $device_updated_by, $created_datetime, $updated_datetime) RETURNING *;`,
+            {
+              bind: {
+                store_inventory_id,
+                store_inventory_name,
+                store_inventory_type,
+                store_inventory_count,
+                device_updated_at: moment(updated_at).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                ),
+                device_updated_by: updated_by,
+                created_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+                updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+              },
+              type: QueryTypes.INSERT,
+            }
+          );
+
+          storeInventoryInc++;
+        } while (storeInventoryInc < store_inventory.length);
+      }
+
+      if (meal_waste.length !== 0) {
+        do {
+          const {
+            item_id,
+            item_name,
+            item_count,
+            item_type,
+            item_year,
+            item_month,
+            item_day,
+            added_at,
+            added_by,
+          } = meal_waste[mealWasteInc];
+
+          await sequelize.query(
+            `INSERT INTO public.daily_meal_waste (id, item_id, item_name, item_count, item_type, item_date, device_added_at, device_added_by, created_datetime, updated_datetime)
+           VALUES (gen_random_uuid(), $item_id, $item_name, $item_count, $item_type, $item_date, $device_added_at, $device_added_by, $created_datetime, $updated_datetime) RETURNING *;`,
+            {
+              bind: {
+                item_id,
+                item_name,
+                item_count,
+                item_type,
+                item_date: moment(
+                  `${item_year}-${item_month}-${item_day} 00:00:00`,
+                  "YYYY-MM-DD HH:mm:ss"
+                ).format("YYYY-MM-DD HH:mm:ss"),
+                device_added_at: moment(added_at).format("YYYY-MM-DD HH:mm:ss"),
+                device_added_by: added_by,
+                created_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+                updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
+              },
+              type: QueryTypes.INSERT,
+            }
+          );
+
+          mealWasteInc++;
+        } while (mealWasteInc < meal_waste.length);
+      }
+
+      return res.status(200).json({
+        message: "success - device is now activated.",
+        status: 1,
+      });
+
+      // return {
+      //   statusCode: 200,
+      //   body: JSON.stringify({
+      //     message: "success",
+      //     status: 1,
+      //   }),
+      // };
+    } catch (error) {
+      console.log(error);
+
+      // return {
+      //   statusCode: 500,
+      //   body: JSON.stringify({
+      //     message: "There is a problem in API.",
+      //     status: 0,
+      //   }),
+      // };
+    }
+  },
   updateData: async (req, res) => {
     if (!req.isAuth) {
       return res.status(403).json({
