@@ -20,6 +20,7 @@ const typesOfMeasurementRoutes = require("./types_of_measurement");
 const typesOfExpenseRoutes = require("./types_of_expense");
 const typesOfPaymentRoutes = require("./types_of_payment");
 const categoriesRoutes = require("./categories");
+const commissaryRoutes = require("./commissary");
 
 // Creating API extension and mounting router to itself for using middlewares
 router.use("/actions", actionsRoutes);
@@ -38,5 +39,6 @@ router.use("/types-of-measurement", typesOfMeasurementRoutes);
 router.use("/types-of-expense", typesOfExpenseRoutes);
 router.use("/types-of-payment", typesOfPaymentRoutes);
 router.use("/categories", categoriesRoutes);
+router.use("/commissary", commissaryRoutes);
 
 module.exports = router;

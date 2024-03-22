@@ -93,15 +93,17 @@ module.exports = {
       });
     }
 
-    const { name } = req.body;
+    const { name, price, used_in_store } = req.body;
 
     try {
       await sequelize.query(
-        `INSERT INTO public.ingredients (id, name, created_datetime, updated_datetime)
-         VALUES (gen_random_uuid(), $name, $created_datetime, $updated_datetime) RETURNING *;`,
+        `INSERT INTO public.ingredients (id, name, price, used_in_store, created_datetime, updated_datetime)
+         VALUES (gen_random_uuid(), $name, $price, $used_in_store, $created_datetime, $updated_datetime) RETURNING *;`,
         {
           bind: {
             name,
+            price,
+            used_in_store,
             created_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
             updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
           },
@@ -129,16 +131,18 @@ module.exports = {
     }
 
     const { id } = req.params;
-    const { name } = req.body;
+    const { name, price, used_in_store } = req.body;
 
     try {
       await sequelize.query(
-        `UPDATE public.ingredients SET name = $name, updated_datetime = $updated_datetime
+        `UPDATE public.ingredients SET name = $name, price = $price, used_in_store = $used_in_store, updated_datetime = $updated_datetime
          WHERE id = $id RETURNING *;`,
         {
           bind: {
             id,
             name,
+            price,
+            used_in_store,
             updated_datetime: moment().format("YYYY-MM-DD HH:mm:ss"),
           },
           type: QueryTypes.UPDATE,
